@@ -7,7 +7,7 @@ require("../models/Student");
 const User = mongoose.model("student");
 var jwt = require("jsonwebtoken");
 const auth = require("../middlewares/auth");
-const { MIDDLEWARE_KEY } = require("../key");
+const result = require("dotenv").config({ path: "./configs/.env" });
 
 // signup
 router.post(
@@ -19,6 +19,12 @@ router.post(
     }),
   ],
   async (req, res) => {
+    if (result.error) {
+      throw result.error;
+      // throw res.status(401).json({
+      //   error: new Error("Process invalid!"),
+      // });
+    }
     const { email, password, f_name, l_name, standard, roll_no } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -63,7 +69,7 @@ router.post(
 
       jwt.sign(
         payload,
-        MIDDLEWARE_KEY,
+        process.env.MIDDLEWARE_KEY,
         {
           expiresIn: 10000,
         },
@@ -123,7 +129,7 @@ router.post(
 
         jwt.sign(
           payload,
-          MIDDLEWARE_KEY,
+          process.env.MIDDLEWARE_KEY,
           {
             expiresIn: 100000,
           },

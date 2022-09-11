@@ -1,21 +1,21 @@
 const express = require("express");
-const graphql = require("express-graphql");
-const bodyparser = require("body-parser");
 const mongoose = require("mongoose");
-const cors = require("cors");
-const { MONGO_URL } = require("./key");
 const app = express();
 const PORT = process.env.PORT || 4000;
 const auth = require("./routes/auth");
 const hostel = require("./routes/hostel");
-var corsOptions = {
-  origin: "http://localhost:8081",
-};
-// app.use(cors(corsOptions));
+const result = require("dotenv").config({ path: "./configs/.env" });
+
+if (result.error) {
+  throw result.error;
+}
+
+console.log("process", process.env.MONGO_URL);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect(MONGO_URL, {
+mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
