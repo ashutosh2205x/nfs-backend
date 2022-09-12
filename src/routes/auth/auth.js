@@ -143,6 +143,7 @@ router.post(
                 f_name: user.f_name,
                 l_name: user.l_name,
                 standard: user.standard,
+                section: user.section,
                 roll_no: user.roll_no,
                 type: user.type,
               },
