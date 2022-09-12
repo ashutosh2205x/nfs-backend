@@ -28,7 +28,8 @@ router.post("/create", auth, async (req, res) => {
     });
   }
   try {
-    let uid = standard + section + day + subject;
+    let uid = standard + section.toUpperCase() + day.charAt(0) + subject_code;
+    console.log("uid->", uid);
     let timetable = await ClassTimetable.findOne({
       uid,
     });
@@ -80,9 +81,9 @@ router.get("/get/all", auth, async (req, res) => {
 });
 
 // get via single node
-router.get("/get/one", auth, async (req, res) => {
+router.get("/get/one/:standard/:section/:day", auth, async (req, res) => {
   let schedule_parent_node =
-    req.body.standard + req.body.section + req.body.day;
+    req.params.standard + req.params.section + req.params.day;
   try {
     await ClassTimetable.find({ schedule_parent_node: schedule_parent_node })
       .populate()
