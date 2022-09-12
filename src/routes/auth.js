@@ -9,7 +9,7 @@ var jwt = require("jsonwebtoken");
 const auth = require("../middlewares/auth");
 const result = require("dotenv").config({ path: "./configs/.env" });
 
-// signup
+// student signup
 router.post(
   "/signup",
   [
@@ -21,9 +21,6 @@ router.post(
   async (req, res) => {
     if (result.error) {
       throw result.error;
-      // throw res.status(401).json({
-      //   error: new Error("Process invalid!"),
-      // });
     }
     const { email, password, f_name, l_name, standard, roll_no } = req.body;
     const errors = validationResult(req);
@@ -32,11 +29,6 @@ router.post(
         errors: errors.array(),
       });
     }
-    console.log("---------");
-
-    console.log("email->", email);
-    console.log("password->", password);
-
     try {
       let user = await User.findOne({
         email,
@@ -159,9 +151,9 @@ router.post(
   }
 );
 
+// get profile
 router.get("/me", auth, async (req, res) => {
   try {
-    // request.user is getting fetched from Middleware after token authentication
     const user = await User.findById(req.user.id);
     res.json(user);
   } catch (e) {
