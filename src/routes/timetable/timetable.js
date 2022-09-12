@@ -18,6 +18,8 @@ router.post("/create", auth, async (req, res) => {
     section,
     lunch_start_time,
     lunch_end_time,
+    subject_code,
+    teacher_id,
   } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -25,9 +27,8 @@ router.post("/create", auth, async (req, res) => {
       errors: errors.array(),
     });
   }
-  console.log("timetable->", req.body);
-  let uid = standard + section + day;
   try {
+    let uid = standard + section + day + subject;
     let timetable = await ClassTimetable.findOne({
       uid,
     });
@@ -43,11 +44,14 @@ router.post("/create", auth, async (req, res) => {
       period_end_time,
       subject,
       teacher,
+      teacher_id,
       standard,
       section,
       lunch_start_time,
       lunch_end_time,
       uid: uid,
+      subject_code,
+      schedule_parent_node: standard + section + day,
     });
     await timetable.save().then((response) => {
       res.status(200).json({
@@ -61,8 +65,8 @@ router.post("/create", auth, async (req, res) => {
   }
 });
 
-// get timetable
-router.get("/get", auth, async (req, res) => {
+// get timetable all
+router.get("/get/all", auth, async (req, res) => {
   try {
     await ClassTimetable.find()
       .populate()
@@ -73,6 +77,46 @@ router.get("/get", auth, async (req, res) => {
     console.log(e);
     res.send({ error: "Error in fetching timetable" });
   }
+});
+
+// get via single node
+router.get("/get/one", auth, async (req, res) => {
+  let schedule_parent_node =
+    req.body.standard + req.body.section + req.body.day;
+  try {
+    await ClassTimetable.find({ schedule_parent_node: schedule_parent_node })
+      .populate()
+      .then((response) => {
+        res.status(200).json({ data: response });
+      });
+  } catch (e) {
+    console.log(e);
+    res.send({ error: "Error in fetching timetable" });
+  }
+});
+
+// get time table via teacher_id (for teacher dashboard)
+router.get("/get/:uid", auth, async (req, res) => {
+  try {
+    await ClassTimetable.find({ teacher_id: req.params.uid })
+      .populate()
+      .then((response) => {
+        res.status(200).json({ data: response });
+      });
+  } catch (e) {
+    console.log(e);
+    res.send({ error: "Error in fetching timetable" });
+  }
+});
+
+// delete timetable
+router.delete("/delete/:uid", (req, res) => {
+  ClassTimetable.findOne({ _id: req.params.uid })
+    .deleteOne({ _id: req.params.uid })
+    .then(res.status(200).send({ message: `succesfully deleted timetable !` }))
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 module.exports = router;

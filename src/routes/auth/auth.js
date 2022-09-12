@@ -159,6 +159,7 @@ router.post(
   }
 );
 
+// get user
 router.get("/me", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -167,6 +168,32 @@ router.get("/me", auth, async (req, res) => {
     console.log(e);
     res.send({ error: "Error in Fetching user" });
   }
+});
+
+// update user
+router.put("/update/:_id", auth, async (req, res) => {
+  console.log("_id", req.params, req.body);
+  const { email, password, f_name, l_name, standard, roll_no } = req.body;
+  User.findOneAndUpdate(
+    { _id: req.params._id },
+    {
+      $set: {
+        email,
+        password,
+        f_name,
+        l_name,
+        standard,
+        roll_no,
+        modified_at: Date.now(),
+      },
+    },
+    { new: true },
+    (err, User) => {
+      if (err) {
+        res.status(401).send(err);
+      } else res.status(200).json(User);
+    }
+  );
 });
 
 // delete user

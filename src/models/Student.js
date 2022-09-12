@@ -21,6 +21,10 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  section: {
+    type: String,
+    required: true,
+  },
   type: {
     type: String,
     required: false,
@@ -34,9 +38,15 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createdAt: {
+  created_at: {
     type: Date,
     default: Date.now(),
+    required: false,
+  },
+  modified_at: {
+    type: Date,
+    default: Date.now(),
+    required: false,
   },
 });
 

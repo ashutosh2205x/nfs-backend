@@ -19,7 +19,15 @@ const ClassTimetable = new mongoose.Schema({
     type: String,
     required: false,
   },
+  subject_code: {
+    type: String,
+    required: true,
+  },
   teacher: {
+    type: String,
+    required: true,
+  },
+  teacher_id: {
     type: String,
     required: true,
   },
@@ -35,6 +43,10 @@ const ClassTimetable = new mongoose.Schema({
     type: String,
     required: true,
   },
+  schedule_parent_node: {
+    type: String,
+    required: false,
+  },
   lunch_start_time: {
     type: Object,
     required: true,
@@ -43,7 +55,7 @@ const ClassTimetable = new mongoose.Schema({
     type: Object,
     required: true,
   },
-  createdAt: {
+  created_at: {
     type: Date,
     default: Date.now(),
   },
