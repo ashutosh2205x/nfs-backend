@@ -3,13 +3,13 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { check, validationResult } = require("express-validator/check");
-require("../models/Student");
+require("../../models/Student");
 const User = mongoose.model("student");
 var jwt = require("jsonwebtoken");
-const auth = require("../middlewares/auth");
+const auth = require("../../middlewares/auth");
 const result = require("dotenv").config({ path: "./configs/.env" });
 
-// student signup
+// signup
 router.post(
   "/signup",
   [
@@ -21,6 +21,9 @@ router.post(
   async (req, res) => {
     if (result.error) {
       throw result.error;
+      // throw res.status(401).json({
+      //   error: new Error("Process invalid!"),
+      // });
     }
     const { email, password, f_name, l_name, standard, roll_no } = req.body;
     const errors = validationResult(req);
@@ -29,6 +32,11 @@ router.post(
         errors: errors.array(),
       });
     }
+    console.log("---------");
+
+    console.log("email->", email);
+    console.log("password->", password);
+
     try {
       let user = await User.findOne({
         email,
@@ -151,7 +159,6 @@ router.post(
   }
 );
 
-// get profile
 router.get("/me", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -160,6 +167,15 @@ router.get("/me", auth, async (req, res) => {
     console.log(e);
     res.send({ error: "Error in Fetching user" });
   }
+});
+
+// delete user
+router.delete("/delete/:id", (req, res) => {
+  User.deleteOne({ _id: req.body._id })
+    .then(res.status(200).send({ message: `deleted ${req.body._id}` }))
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 module.exports = router;
