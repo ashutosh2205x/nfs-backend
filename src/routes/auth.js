@@ -7,9 +7,9 @@ require("../models/Student");
 const User = mongoose.model("student");
 var jwt = require("jsonwebtoken");
 const auth = require("../middlewares/auth");
-const { MIDDLEWARE_KEY } = require("../key");
+const result = require("dotenv").config({ path: "./configs/.env" });
 
-// signup
+// student signup
 router.post(
   "/signup",
   [
@@ -19,6 +19,9 @@ router.post(
     }),
   ],
   async (req, res) => {
+    if (result.error) {
+      throw result.error;
+    }
     const { email, password, f_name, l_name, standard, roll_no } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -26,11 +29,6 @@ router.post(
         errors: errors.array(),
       });
     }
-    console.log("---------");
-
-    console.log("email->", email);
-    console.log("password->", password);
-
     try {
       let user = await User.findOne({
         email,
@@ -63,7 +61,7 @@ router.post(
 
       jwt.sign(
         payload,
-        MIDDLEWARE_KEY,
+        process.env.MIDDLEWARE_KEY,
         {
           expiresIn: 10000,
         },
@@ -123,7 +121,7 @@ router.post(
 
         jwt.sign(
           payload,
-          MIDDLEWARE_KEY,
+          process.env.MIDDLEWARE_KEY,
           {
             expiresIn: 100000,
           },
@@ -153,9 +151,9 @@ router.post(
   }
 );
 
+// get profile
 router.get("/me", auth, async (req, res) => {
   try {
-    // request.user is getting fetched from Middleware after token authentication
     const user = await User.findById(req.user.id);
     res.json(user);
   } catch (e) {
