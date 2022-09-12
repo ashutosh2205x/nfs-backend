@@ -44,6 +44,7 @@ router.post("/create", auth, async (req, res) => {
   }
 });
 
+// get all
 router.get("/get", auth, async (req, res) => {
   try {
     const hostels = await Hostel.find()
@@ -55,6 +56,39 @@ router.get("/get", auth, async (req, res) => {
     console.log(e);
     res.send({ error: "Error in fetching hostels" });
   }
+});
+
+// update hostel
+router.put("/update/:_id", auth, async (req, res) => {
+  const { name, rating, address, location, uid } = req.body;
+  Hostel.findOneAndUpdate(
+    { _id: req.params._id },
+    {
+      $set: {
+        name,
+        rating,
+        address,
+        location,
+        modified_at: Date.now(),
+      },
+    },
+    { new: true },
+    (err, Hostel) => {
+      if (err) {
+        res.status(401).send(err);
+      } else res.status(200).json(Hostel);
+    }
+  );
+});
+
+// delete hostel entry
+router.delete("/delete/:uid", (req, res) => {
+  Hostel.findOne({ _id: req.params.uid })
+    .deleteOne({ _id: req.params.uid })
+    .then(res.status(200).send({ message: `succesfully deleted hostel !` }))
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 module.exports = router;
