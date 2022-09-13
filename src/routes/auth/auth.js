@@ -138,15 +138,17 @@ router.post(
             res.status(200).json({
               token,
               expiresIn: 100000,
-              user: {
-                email: email,
-                f_name: user.f_name,
-                l_name: user.l_name,
-                standard: user.standard,
-                section: user.section,
-                roll_no: user.roll_no,
-                type: user.type,
-              },
+              user: user,
+              // user: {
+              //   email: email,
+              //   f_name: user.f_name,
+              //   l_name: user.l_name,
+              //   standard: user.standard,
+              //   section: user.section,
+              //   roll_no: user.roll_no,
+              //   role: user.type,
+              //   _id : user._id
+              // },
             });
           }
         );
