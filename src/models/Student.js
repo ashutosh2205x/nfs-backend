@@ -25,7 +25,7 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  type: {
+  role: {
     type: String,
     required: false,
     default: "student",
