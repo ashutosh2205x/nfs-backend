@@ -1,27 +1,17 @@
 const mongoose = require("mongoose");
 
-const FeeSchema = new mongoose.Schema({
-  month: {
-    type: String,
-    required: true,
-  },
-  paid: {
+const ComplaintSchema = new mongoose.Schema({
+  
+  thread: {
     type: Boolean,
     required: true,
   },
-  amount: {
+  posted_by: {
     type: String,
     required: true,
   },
-
-  paid_on: {
-    type: String,
-    required: true,
-  },
-  student_id: {
-    type: String,
-    required: true,
-  },
+  comments:{},
+  
   created_at: {
     type: Date,
     default: Date.now(),
@@ -33,4 +23,4 @@ const FeeSchema = new mongoose.Schema({
   },
 });
 
-mongoose.model("fee", FeeSchema);
+mongoose.model("complaint", ComplaintSchema);
