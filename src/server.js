@@ -6,8 +6,9 @@ const auth = require("./routes/auth/auth");
 const hostel = require("./routes/hostel/hostel");
 const timetable = require("./routes/timetable/timetable");
 const fees = require("./routes/fees/fees");
+const upload = require("./routes/file/upload.route");
+const health = require("./routes/health/health.route");
 const dataUpload = require("./routes/admin/dataUpload");
-// var fileupload = require("express-fileupload");
 
 const result = require("dotenv").config({ path: "./configs/.env" });
 if (result.error) {
@@ -15,7 +16,6 @@ if (result.error) {
 }
 
 app.use(express.json());
-// app.use(fileupload);
 app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect(process.env.MONGO_URL, {
@@ -23,16 +23,12 @@ mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
 });
 
-// routes
-app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/utils/pages/upload.html");
-});
-
+app.use(health);
 app.use("/user", auth);
 app.use("/hostel", hostel);
 app.use("/timetable", timetable);
 app.use("/fees", fees);
-app.use(dataUpload);
+app.use(dataUpload)
 
 mongoose.connection.on("connected", () => {
   console.log("connected to MongoDB 🌐 !, PORT:", PORT);
@@ -47,5 +43,5 @@ app.listen(PORT, () => {
 // Handling Error
 process.on("unhandledRejection", (err) => {
   console.log(`An error occurred: ${err.message}`);
-  server.close(() => process.exit(1));
+  app.disable(() => process.exit(1));
 });

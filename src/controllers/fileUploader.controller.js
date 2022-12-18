@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 var storage = multer.diskStorage({
   //multers disk storage settings
   destination: function (req, file, cb) {
-    cb(null, "./uploads");
+    cb(null, "./tmp");
   },
   filename: function (req, file, cb) {
     var datetimestamp = Date.now();
@@ -21,10 +21,9 @@ var storage = multer.diskStorage({
 });
 
 var upload = multer({
-  //multer settings
   storage: storage,
   fileFilter: function (req, file, callback) {
-    //file filter
+    // xl file filter
     if (
       ["xls", "xlsx"].indexOf(
         file.originalname.split(".")[file.originalname.split(".").length - 1]

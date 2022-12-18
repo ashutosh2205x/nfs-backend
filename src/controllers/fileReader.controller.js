@@ -1,15 +1,14 @@
 var express = require("express");
 var fs = require("fs");
-
+// const x =require("../")
 const xlsx = require("xlsx");
 
 function convertExcelFileToJsonUsingXlsx() {
-  // Read the file using pathname
-  const file = xlsx.readFile("./uploads/file.xlsx");
+  // Read the file using pathname , since file is constant
+  const file = xlsx.readFile("../uploads/file.xlsx");
   // Grab the sheet info from the file
   const sheetNames = file.SheetNames;
   const totalSheets = sheetNames.length;
-  // Variable to store our data
   let parsedData = [];
   // Loop through sheets
   for (let i = 0; i < totalSheets; i++) {
