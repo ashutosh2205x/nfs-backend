@@ -6,3 +6,6 @@ npm-debug.log
 .env
 package-lock.json
 *.DS_Store
+
+/src/tmp
+/src/uploads
