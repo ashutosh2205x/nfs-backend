@@ -8,7 +8,7 @@ const timetable = require("./routes/timetable/timetable");
 const fees = require("./routes/fees/fees");
 const upload = require("./routes/file/upload.route");
 const health = require("./routes/health/health.route");
-const dataUpload = require("./routes/admin/dataUpload");
+const fileUpload = require("./routes/admin/fileUpload.route");
 
 const result = require("dotenv").config({ path: "./configs/.env" });
 if (result.error) {
@@ -28,7 +28,7 @@ app.use("/user", auth);
 app.use("/hostel", hostel);
 app.use("/timetable", timetable);
 app.use("/fees", fees);
-app.use(dataUpload)
+app.use(fileUpload)
 
 mongoose.connection.on("connected", () => {
   console.log("connected to MongoDB 🌐 !, PORT:", PORT);

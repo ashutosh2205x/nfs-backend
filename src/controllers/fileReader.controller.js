@@ -5,7 +5,7 @@ const xlsx = require("xlsx");
 
 function convertExcelFileToJsonUsingXlsx() {
   // Read the file using pathname , since file is constant
-  const file = xlsx.readFile("../uploads/file.xlsx");
+  const file = xlsx.readFile("./tmp/file.xlsx");
   // Grab the sheet info from the file
   const sheetNames = file.SheetNames;
   const totalSheets = sheetNames.length;

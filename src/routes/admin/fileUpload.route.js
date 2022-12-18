@@ -11,8 +11,8 @@ router.post("/upload", function (req, res) {
         res.json({ error_code: 1, err_desc: err });
         return;
       }
-      // convertExcelFileToJsonUsingXlsx();
-      res.json({ error_code: 0, err_desc: null });
+      convertExcelFileToJsonUsingXlsx();
+      res.json({ status: "success" });
     });
   } catch (error) {
     console.log("error", error);
