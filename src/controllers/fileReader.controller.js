@@ -1,9 +1,9 @@
 var express = require("express");
 var fs = require("fs");
-// const x =require("../")
+const { readFile } = require("fs/promises");
 const xlsx = require("xlsx");
 
-function convertExcelFileToJsonUsingXlsx() {
+async function convertExcelFileToJsonUsingXlsx() {
   // Read the file using pathname , since file is constant
   const file = xlsx.readFile("./tmp/file.xlsx");
   // Grab the sheet info from the file
@@ -20,14 +20,17 @@ function convertExcelFileToJsonUsingXlsx() {
     parsedData.push(...tempData);
   }
   // call a function to save the data in a json file
-  generateJSONFile(parsedData);
+  return await generateJSONFile(parsedData);
 }
 
-function generateJSONFile(data) {
+async function generateJSONFile(data) {
   try {
     fs.writeFileSync("./uploads/data.json", JSON.stringify(data));
+    let parsedData = JSON.parse(await readFile("./uploads/data.json", "utf8"));
+    return parsedData;
   } catch (err) {
     console.error(err);
+    return err;
   }
 }
 
