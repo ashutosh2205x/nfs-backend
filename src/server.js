@@ -6,7 +6,6 @@ const auth = require("./routes/auth/auth");
 const hostel = require("./routes/hostel/hostel");
 const timetable = require("./routes/timetable/timetable");
 const fees = require("./routes/fees/fees");
-const upload = require("./routes/file/upload.route");
 const health = require("./routes/health/health.route");
 const fileUpload = require("./routes/admin/fileUpload.route");
 
