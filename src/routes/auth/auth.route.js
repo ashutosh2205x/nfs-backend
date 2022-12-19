@@ -3,13 +3,14 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { check, validationResult } = require("express-validator/check");
-require("../../models/Student");
-const User = mongoose.model("student");
+require("../../models/User");
+const User = mongoose.model("user");
 var jwt = require("jsonwebtoken");
-const auth = require("../../middlewares/auth");
+const auth = require("../../middlewares/auth.m");
+const sendEmail = require("../../utils/email.util");
 const result = require("dotenv").config({ path: "./configs/.env" });
 
-// signup
+//  signup
 router.post(
   "/signup",
   [
@@ -21,22 +22,23 @@ router.post(
   async (req, res) => {
     if (result.error) {
       throw result.error;
-      // throw res.status(401).json({
-      //   error: new Error("Process invalid!"),
-      // });
     }
-    const { email, password, f_name, l_name, standard, roll_no } = req.body;
+    const {
+      email,
+      password,
+      f_name,
+      l_name,
+      standard,
+      roll_no,
+      section,
+      role,
+    } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
         errors: errors.array(),
       });
     }
-    console.log("---------");
-
-    console.log("email->", email);
-    console.log("password->", password);
-
     try {
       let user = await User.findOne({
         email,
@@ -46,14 +48,16 @@ router.post(
           msg: "User Already Exists",
         });
       }
-
+      //  signup
       user = new User({
         email,
         password,
         f_name,
         l_name,
         standard,
+        section,
         roll_no,
+        role,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -138,6 +142,7 @@ router.post(
             res.status(200).json({
               token,
               expiresIn: 100000,
+              // user: user,
               user: {
                 email: email,
                 f_name: user.f_name,
@@ -145,7 +150,8 @@ router.post(
                 standard: user.standard,
                 section: user.section,
                 roll_no: user.roll_no,
-                type: user.type,
+                role: user.role,
+                _id: user._id,
               },
             });
           }
@@ -205,5 +211,105 @@ router.delete("/delete/:id", (req, res) => {
       console.log(err);
     });
 });
+
+// invite user
+router.post(
+  "/invite",
+  [check("email", "Please enter a valid email").isEmail()],
+  auth,
+  async (req, res, next) => {
+    if (result.error) {
+      throw result.error;
+    }
+    const { email } = req.body;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    try {
+      let options = {
+        to: email,
+        subject: "NextFutureSchool Invitation",
+        html: "<h1>Welcome to NFS</h1><br/><p>That was easy!</p>",
+      };
+      await sendEmail(options, next);
+      res.json({ status: "success", data: req.body }).send(200);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({ error: err.message });
+    }
+  }
+);
+
+// // admin signup
+// router.post(
+//   "admin/signup",
+//   [
+//     check("email", "Please enter a valid email").isEmail(),
+//     check("password", "Please enter a valid password").isLength({
+//       min: 6,
+//     }),
+//   ],
+//   async (req, res) => {
+//     if (result.error) {
+//       throw result.error;
+//     }
+//     const { email, password, f_name, l_name } = req.body;
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({
+//         errors: errors.array(),
+//       });
+//     }
+//     try {
+//       let user = await User.findOne({
+//         email,
+//       });
+//       if (user) {
+//         return res.status(400).json({
+//           msg: "User Already Exists",
+//         });
+//       }
+
+//       user = new User({
+//         email,
+//         password,
+//         f_name,
+//         l_name,
+//       });
+
+//       const salt = await bcrypt.genSalt(10);
+//       user.password = await bcrypt.hash(password, salt);
+
+//       await user.save();
+
+//       const payload = {
+//         user: {
+//           id: user.id,
+//         },
+//       };
+
+//       jwt.sign(
+//         payload,
+//         process.env.MIDDLEWARE_KEY,
+//         {
+//           expiresIn: 10000,
+//         },
+//         (err, token) => {
+//           if (err) throw err;
+//           res.status(200).json({
+//             token,
+//           });
+//         }
+//       );
+//     } catch (err) {
+//       console.log(err);
+//       res.status(500).send({ error: err.message });
+//     }
+//   }
+// );
 
 module.exports = router;

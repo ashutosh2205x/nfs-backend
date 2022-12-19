@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 require("../../models/ClassTimetable");
 const ClassTimetable = mongoose.model("classtimetable");
 const { validationResult } = require("express-validator");
-const auth = require("../../middlewares/auth");
+const auth = require("../../middlewares/auth.m");
 
 // create timetable
 router.post("/create", auth, async (req, res) => {
@@ -35,7 +35,7 @@ router.post("/create", auth, async (req, res) => {
     });
     if (timetable) {
       return res.status(400).json({
-        msg: "Class time table already exists",
+        message: "Class time table already exists",
       });
     }
 

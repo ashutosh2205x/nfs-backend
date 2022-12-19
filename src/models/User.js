@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const StudentSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   f_name: {
     type: String,
     required: true,
@@ -9,27 +9,6 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  roll_no: {
-    type: String,
-    required: true,
-  },
-  profile_pic: {
-    type: String,
-    required: false,
-  },
-  standard: {
-    type: String,
-    required: true,
-  },
-  section: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    required: false,
-    default: "student",
-  },
   email: {
     type: String,
     required: true,
@@ -37,6 +16,27 @@ const StudentSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  profile_pic: {
+    type: String,
+    required: false,
+  },
+  roll_no: {
+    type: String,
+    required: false,
+  },
+  standard: {
+    type: String,
+    required: false,
+  },
+  section: {
+    type: String,
+    required: false,
+  },
+  role: {
+    type: String,
+    required: false,
+    default: "student",
   },
   created_at: {
     type: Date,
@@ -50,4 +50,4 @@ const StudentSchema = new mongoose.Schema({
   },
 });
 
-mongoose.model("student", StudentSchema);
+mongoose.model("user", UserSchema);

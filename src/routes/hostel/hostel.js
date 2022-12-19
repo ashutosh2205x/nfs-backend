@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-require("../models/Hostels");
+require("../../models/Hostels");
 const Hostel = mongoose.model("hostel");
 const { validationResult } = require("express-validator");
-const auth = require("../middlewares/auth");
+const auth = require("../../middlewares/auth.m");
 
 // create hostel
 router.post("/create", auth, async (req, res) => {
