@@ -4,7 +4,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 require("../../models/Fees");
 const Fees = mongoose.model("fee");
-const auth = require("../../middlewares/auth");
+const auth = require("../../middlewares/auth.m");
 
 // create/save fee
 router.post("/create", auth, async (req, res) => {

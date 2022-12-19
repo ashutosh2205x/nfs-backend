@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-function jsonReader(filePath, cb) {
+function jsonParser(filePath, cb) {
   return fs.readFile(filePath, (err, fileData) => {
     if (err) {
       return cb && cb(err);
@@ -13,7 +13,7 @@ function jsonReader(filePath, cb) {
     }
   });
 }
-jsonReader("./uploads/data.json", (err, data) => {
+jsonParser("./uploads/data.json", (err, data) => {
   if (err) {
     console.log(err);
     return null;
@@ -21,4 +21,4 @@ jsonReader("./uploads/data.json", (err, data) => {
   return data;
 });
 
-module.exports = jsonReader;
+module.exports = jsonParser;
