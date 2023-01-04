@@ -39,10 +39,10 @@ const sendEmail = async (options, next) => {
     transport.sendMail(mailOptions, function (error, info) {
       var status = "";
       var response = "";
-
       if (error) {
-        status = result.error;
-        response = error;
+        console.log("sendMail error", error);
+        // status = result.error;
+        // response = error;
         // createLog(
         //   {
         //     text: options.htmlToSend,
@@ -56,8 +56,10 @@ const sendEmail = async (options, next) => {
         // );
         EmailErrorHandler(error, next);
       } else {
-        status = result.success;
-        response = info.response;
+        console.log("sendMail info", info);
+
+        // status = result.success;
+        // response = info.response;
         next();
       }
 
@@ -69,12 +71,12 @@ const sendEmail = async (options, next) => {
         response: response,
       };
       // createLog(log, options.user, next);
-      resolve(null);
+      // resolve(null);
     });
   } catch (ex) {
     //console.log(ex.message);
     EmailErrorHandler(ex, next);
-    resolve(null);
+    // resolve(null);
   }
 };
 

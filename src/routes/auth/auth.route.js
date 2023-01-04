@@ -8,7 +8,9 @@ const User = mongoose.model("user");
 var jwt = require("jsonwebtoken");
 const auth = require("../../middlewares/auth.m");
 const sendEmail = require("../../utils/email.util");
+const { InvitationHTML } = require("../../utils/email-templates");
 const result = require("dotenv").config({ path: "./configs/.env" });
+const handlebars = require("handlebars");
 
 //  signup
 router.post(
@@ -45,7 +47,7 @@ router.post(
       });
       if (user) {
         return res.status(400).json({
-          msg: "User Already Exists",
+          error: "User Already Exists",
         });
       }
       //  signup
@@ -230,13 +232,39 @@ router.post(
       });
     }
     try {
-      let options = {
-        to: email,
-        subject: "NextFutureSchool Invitation",
-        html: "<h1>Welcome to NFS</h1><br/><p>That was easy!</p>",
-      };
-      await sendEmail(options, next);
-      res.json({ status: "success", data: req.body }).send(200);
+      // var template = handlebars.compile(InvitationHTML());
+      // var htmlToSend = template({ school_name: "SchoolName" });
+
+      let user = await User.findOne({
+        email,
+      });
+      if (user) {
+        return res.status(400).json({
+          error: "User Already Exists",
+        });
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        let unhashed = Math.random().toString(36);
+        let options = {
+          to: email,
+          subject: "NextFutureSchool Invitation",
+          // html: htmlToSend,
+          html: `<h1>Welcome to NFS</h1><br/><p>That was easy!</p><br/><h2><strong>user:</strong><p>${email}</p></h2><br/><h2><strong>password:</strong><p>${unhashed}</p></h2>`,
+        };
+        await sendEmail(options, next);
+        let password = await bcrypt.hash(unhashed, salt);
+        user = new User({
+          email,
+          password,
+        });
+        await user.save();
+        res
+          .json({
+            status: "success",
+            data: { email: req.body },
+          })
+          .send(200);
+      }
     } catch (err) {
       console.log(err);
       res.status(500).send({ error: err.message });
