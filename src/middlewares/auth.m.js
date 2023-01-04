@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
     next();
   } catch {
     res.status(401).json({
-      error: "Bad token",
+      error: "Unauthorized",
     });
   }
 };
