@@ -8,12 +8,13 @@ const timetable = require("./routes/timetable/timetable");
 const fees = require("./routes/fees/fees");
 const health = require("./routes/health/health.route");
 const fileUpload = require("./routes/admin/fileUpload.route");
+const cors=require('cors');
 
 const result = require("dotenv").config({ path: "./configs/.env" });
 if (result.error) {
   throw result.error;
 }
-
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
